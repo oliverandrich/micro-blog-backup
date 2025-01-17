@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+	<meta name="generator" content="Hugo 0.91.2" />
+
+  <title>
+      
+      Oliver Andrich
+      
+  </title>
+
+</head>
+
+
+  <body>
+
+    
+
+	
+<div class="h-feed">
+
+	
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2025/01/11/backup-for-my-home-server.html">Backup for my home server with restic and resticprofile</a></h1>
+		
+
+		<a href="https://andrich.me/2025/01/11/backup-for-my-home-server.html" class="u-url"><time class="dt-published" datetime="2025-01-11 17:42:05 &#43;0100">Jan 11, 2025</time></a>
+
+		<div class="e-content">
+			 <p><img src="https://andrich.me/uploads/2025/cleanshot-2025-01-11-at-16.43.452x.png" alt=""></p>
+<p>Recently, I did myself a favor and bought a little <a href="https://www.amazon.com/-/de/dp/B0D6G36LVK/?th=1">Beelink SER5 Pro Mini PC</a> a home server to run some services I use on my home network and also to run some development containers.</p>
+<p>With this shiny new home server, I also wanted to set up some offsite backups for it. I <a href="https://social.tchncs.de/@oliverandrich/113809850827095296">asked</a> on Mastodon for suggestions and got tips to use <a href="https://www.borgbackup.org/">borgbackup</a> and <a href="https://restic.net/">restic</a>. Both are reasonable suggestions with great documentation.</p>
+<p>After some research, I decided to go with restic and <a href="https://creativeprojects.github.io/resticprofile/">resticprofile</a>. The deciding factor was that Hetzner, whose new <a href="https://www.hetzner.com/storage/object-storage/">S3-compatible object storage</a> I wanted to use, had a <a href="https://docs.hetzner.com/storage/object-storage/howto-backups/restic">documentation for using restic</a>.</p>
+<h3 id="installing-restic-and-resticprofile">Installing restic and resticprofile</h3>
+<p>I run Debian Bookworm on my home server, so the installation of restic was pretty easy with <strong>apt install restic</strong>. To install resticprofile, I used the <a href="https://creativeprojects.github.io/resticprofile/installation/linux/index.html">guide for linux</a> and ran the following commands:</p>
+<pre><code>curl -LO https://raw.githubusercontent.com/creativeprojects/resticprofile/master/install.sh
+chmod +x install.sh
+sudo ./install.sh -b /usr/local/bin
+</code></pre>
+<h3 id="configuring-backups">Configuring backups</h3>
+<p>First off, I had to configure <a href="https://docs.hetzner.com/storage/object-storage/getting-started/generating-s3-keys/">S3 credentials</a> and set up a <a href="https://docs.hetzner.com/storage/object-storage/getting-started/creating-a-bucket/">S3 bucket</a> on the Hetzner cloud.</p>
+<p>Depending on the location chosen, the endpoint is one of</p>
+<ul>
+<li>fsn1.your-objectstorage.com (Falkenstein)</li>
+<li>nbg1.your-objectstorage.com (Nuremberg)</li>
+<li>hel1.your-objectstorage.com (Helsinki)</li>
+</ul>
+<p>My server has just a small 500 GB SSD disk so far, so I decided to go with a single backup configuration that backups the whole device with some exceptions. The backup is scheduled at midnight and the cleanup process at half past midnight.</p>
+<p>The configuration file is pretty straightforward and easy. I placed it in the one of the default locations <strong>/usr/local/etc/resticprofile/profiles.yaml</strong>.</p>
+<pre><code># yaml-language-server: $schema=https://creativeprojects.github.io/resticprofile/jsonschema/config-1.json
+
+version: '1'
+
+default:
+  repository: 's3:https://&lt;Endpoint of the bucket&gt;/&lt;Name of the S3 Bucket&gt;'
+  initialize: true
+  env:
+    AWS_ACCESS_KEY_ID: &lt;Your Access Key&gt;
+    AWS_SECRET_ACCESS_KEY: &lt;Your Secret Key&gt;
+    RESTIC_PASSWORD: &lt;Some long and cryptic string&gt;
+  backup:
+    source:
+      - /
+    exclude:
+      - /dev
+      - /media
+      - /mnt
+      - /proc
+      - /run
+      - /sys
+      - /tmp
+      - /var/cache
+      - /var/lib/docker
+      - .cache
+    schedule-permission: system
+    schedule-log: &quot;/var/log/resticprofile/homeserver-backup.log&quot;
+    # Every day at midnight
+    schedule: &quot;*-*-* 00:00:00&quot;
+  forget:
+    # Keep the last 10 snapshots
+    keep-last: 10
+    prune: true
+    schedule-permission: system
+    schedule-log: &quot;/var/log/resticprofile/homeserver-forget.log&quot;
+    # Every day at half past midnight
+    schedule: &quot;*-*-* 00:30:00&quot;
+</code></pre>
+<h3 id="initialize-and-do-your-first-backup">Initialize and do your first backup</h3>
+<p>To do the initialization of the repository and run my first backup, I had to call the following two commands.</p>
+<pre><code>resticprofile init
+resticprofile backup 
+</code></pre>
+<h3 id="scheduling-backups">Scheduling backups</h3>
+<p>Finally, a lazy guy like me wants a regular process for his backup. resticprofile has a handy command to install a scheduler for me that obeys the rules configured in the <code>profiles.yaml</code> above.</p>
+<pre><code>resticprofile schedule
+</code></pre>
+<p>Done!</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+
+		<a href="https://andrich.me/2025/01/11/pretty-happy-how-everything-works.html" class="u-url"><time class="dt-published" datetime="2025-01-11 00:07:02 &#43;0100">Jan 11, 2025</time></a>
+
+		<div class="e-content">
+			 <p>Pretty happy how everything works in this micro.blog. The only thing I have to make up my mind about is, whether I want to use automatic cross posting or not. But the backup to github doesn&rsquo;t seem to work at all. Not sure what I did wrong about it.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2025/01/10/week-notes.html">Week Notes 2025-01-10</a></h1>
+		
+
+		<a href="https://andrich.me/2025/01/10/week-notes.html" class="u-url"><time class="dt-published" datetime="2025-01-10 08:28:07 &#43;0100">Jan 10, 2025</time></a>
+
+		<div class="e-content">
+			 <p>This has been the last week of my three-week-long winter holidays. A vacation I needed more than I needed any vacation in the last few years. The second half of 2024 was so packed and stressful. I had many plans for this vacation, but eventually, I just relaxed, watched TV, read three books, played some Xbox and spent some calm days with my wife.</p>
+<p>Something that I haven’t written about is, that I have been <a href="https://www.djangoproject.com/foundation/minutes/2024/dec/10/dsf-board-monthly-meeting/">approved as an individual member</a> of the Django Software Foundation in December. This is something I am a bit proud of.</p>
+<p>As a side note, here you can see one of my two new year resolutions in effect. I want to turn writing week notes and blogging in general into a habit. Wish me luck.</p>
+<h3 id="articles">Articles</h3>
+<ul>
+<li><a href="https://simonwillison.net/2024/Dec/31/llms-in-2024/">Things we learned about LLMs in 2024</a> — Simon wrote the most concise summary about LLMs and the whole bubble around them. If you have to pick one article, take this one. It is full of valuable infos and analysis. But be warned, it is a long read that takes some time to get through.</li>
+<li><a href="https://adamj.eu/tech/2025/01/09/django-import-maps/">Django: render JavaScript import maps in templates</a> — Another great article by <a href="https://adamj.eu/">Adam</a> covering import maps and how to use them in a Django project so that it can be conveniently be integrated with the static file serving of Django.</li>
+<li><a href="https://astral.sh/blog/ruff-v0.9.0">Ruff v0.9.0</a> — Ruff 0.9.0 has been released with some nice additions. Especially the changes for f-string rendering made me happy.</li>
+</ul>
+<h3 id="tools">Tools</h3>
+<ul>
+<li><a href="https://lens.rknight.me/">Lens</a> — a pleasant tool to check your meta tags, icons and rss feeds. It was quite handy while configuring this new blog. I have still not all things solved, but most things work already.</li>
+</ul>
+<h3 id="current-reading">Current Reading</h3>
+<ul>
+<li><a href="https://www.cross-cult.de/titel/star-trek-zeit-des-wandels-1-geburt.html?titel_medium=9">Star Trek — Zeit des Wandels: Geburt</a> 🇩🇪 — The start of an interesting new adventure for the crew of Star Trek: Next Generation. It is set after Star Trek: Nemesis and starts with an investigation of the battlefield in the Rashanar sector. <a href="https://en.wikipedia.org/wiki/John_Vornholt">John Vornholt</a> is a well established writer of tie-ins, so the overall quality of the story is good and exciting. Good stuff to read to relax in the evening.</li>
+<li><a href="https://www.rheinwerk-verlag.de/kuenstliche-intelligenz-wie-sie-funktioniert-und-was-sie-fuer-uns-bedeutet/">Künstliche Intelligenz</a> by <a href="https://strumke.github.io/">Inga Strümke</a> 🇩🇪 — A wonderful introduction to the field of artificial intelligence. A well-deserved bestseller. I am not necessarily the audience for this book with my background in computer science and artificial intelligence studies, but I am learning from this book how to explain modern and partially complex concepts to normal people. In case you need a present for someone who is interested, take this book. I also tried the Norwegian <a href="https://www.norli.no/9788248935728">original book</a>, but my understanding of Norwegian has eroded since the early 2000s. ¯\_(ツ)_/¯</li>
+</ul>
+<h3 id="on-social-media">On social media</h3>
+<p><img src="https://andrich.me/uploads/2025/mastopoet-oliverandrich-09012025.jpg" alt=""></p>
+<p><a href="https://social.tchncs.de/@oliverandrich/113797928988507791">https://social.tchncs.de/@oliverandrich/113797928988507791</a></p>
+<p>Yesterday I announced that I signed up to <a href="https://codeberg.org/">Codeberg e.V.</a> as a supporting member in favor of my GitHub Pro subscription. I can’t remember that any of my posts received so many boosts and favs. I am a bit surprised by the interaction rate with this Mastodon post. Normally, I see only a few boosts or favs, if any.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2025/01/09/my-alfred-workflow-for-todoist.html">My Alfred Workflow for Todoist</a></h1>
+		
+
+		<a href="https://andrich.me/2025/01/09/my-alfred-workflow-for-todoist.html" class="u-url"><time class="dt-published" datetime="2025-01-09 10:51:28 &#43;0100">Jan 9, 2025</time></a>
+
+		<div class="e-content">
+			 <p><img src="https://andrich.me/uploads/2025/cleanshot-2025-01-09-at-09.42.032x.png" alt=""></p>
+<p>I use <a href="https://todoist.com/">Todoist</a> as my task list application for a while now. Before that, I have used <a href="https://culturedcode.com/things/">Things</a> by Cultured Code. I had to leave Things behind because it is still lacking the ability to share to-do list with other users. But one feature I have missed from Things all the time — the Things helper. This is a small add-on that registers a global shortcut, that creates tasks for E-Mails or links in Safari or Chrome.</p>
+<p>I got the inspiration from a friend to reimplement it using <a href="https://www.alfredapp.com">Alfred</a>, my primary shortcut and productivity driver on my Mac. And it was way easier than I thought.</p>
+<h3 id="features">Features</h3>
+<ul>
+<li>Register CMD+Shift+Space as a global short to create new tasks. If neither Mail nor Safari is the front most application, the standard quick add dialog from Todoist is opened.</li>
+<li>Register some keywords to open certain views from Alfred.
+<ul>
+<li>“today” and “heute” to open the today view.</li>
+<li>“inbox” and “eingang” to open the inbox view.</li>
+<li>“upcoming” and “geplant” to open the upcoming view.</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://codeberg.org/oliverandrich/worfklow-for-todoist/archive/1.0.0.zip">Download from codeberg.org</a></p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2025/01/08/bye-bye-wordpress-hello-microblog.html">Bye, Bye, WordPress. Hello, micro.blog!</a></h1>
+		
+
+		<a href="https://andrich.me/2025/01/08/bye-bye-wordpress-hello-microblog.html" class="u-url"><time class="dt-published" datetime="2025-01-08 14:06:49 &#43;0100">Jan 8, 2025</time></a>
+
+		<div class="e-content">
+			 <p>Since Matt started his crazy little campaign at the end of the last year, I had the desire to get rid of WordPress and move elsewhere. First, I thought a bit about using Hugo or so. But this was too much work for my little, low-volume blog. And I also wanted a service that lets me post from my browser and while I am using my mobile. It should be simple, too. Micro.blog is a natural choice then.</p>
+<p>The transition from WordPress was super easy. I set up my blog and followed the instructions from the help section covering the <a href="https://help.micro.blog/t/wordpress-import/55">WordPress import</a>.</p>
+<h3 id="lessons-learned-during-my-first-attempt">Lessons learned during my first attempt</h3>
+<ul>
+<li>Every tag and category is mapped to a category in here. Bad, because I didn&rsquo;t want 100+ categories on my new blog.</li>
+<li>The process takes some time, even though I had the impression that it was finished quickly. This caused me to start the process with different exports several times. Afterward I had every post many times in my post list, every image was imported many times too, and I ended up with a total mess.</li>
+<li>The post-only export doesn&rsquo;t seem to work. You have to export the complete WordPress content for the import process to succeed.</li>
+</ul>
+<p>Having to delete 100 posts and 200 images one by one let me prepare my second attempt a bit better.</p>
+<h3 id="my-second-attempt">My second attempt</h3>
+<p>Before, I did the following on the WordPress side:</p>
+<ul>
+<li>Deleted all tags and categories I would rather not see in micro.blog.</li>
+<li>Deleted posts that I didn&rsquo;t want to migrate.</li>
+</ul>
+<p>Then I did a complete export, did one import and everything worked like a charm.</p>
+<p>In the end, I only migrated 8 posts from the 28 on WordPress. Most of them just worked after the import, I only had to fix all the code blocks because I used a somewhat obscure code block plugin on WordPress.</p>
+<p>Now I am here and satisfied with the results. The tweaking of the theme was easy from my perspective. The backend is simple and just works. The only annoyance I have seen so far, the editor automatically reloads occasionally, which made me finish this post in an external editor. I have to investigate if this is a feature, a problem with my browser or something else. Maybe it is also an option to use a client like MarsEdit or Ulysses.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/12/30/my-default-apps-at-the.html">My Default Apps at the End of 2024</a></h1>
+		
+
+		<a href="https://andrich.me/2024/12/30/my-default-apps-at-the.html" class="u-url"><time class="dt-published" datetime="2024-12-30 18:18:03 &#43;0100">Dec 30, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/12/07/pycharm-tailwind-amp-htmx.html">PyCharm, Tailwind &amp; htmx</a></h1>
+		
+
+		<a href="https://andrich.me/2024/12/07/pycharm-tailwind-amp-htmx.html" class="u-url"><time class="dt-published" datetime="2024-12-07 21:45:14 &#43;0100">Dec 7, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">❯ python manage.py tailwind install_pycharm_workaround
+Tailwind CSS CLI already exists at <span style="color:#e6db74">&#39;/Users/oa/.local/bin/tailwindcss-macos-arm64-3.4.13&#39;</span>
+Created package.json at <span style="color:#e6db74">&#39;/Users/oa/Projekte/privat/siloga/package.json&#39;</span>
+Created link at <span style="color:#e6db74">&#39;/Users/oa/Projekte/privat/siloga/node_modules/tailwindcss/lib/cli.js&#39;</span> to <span style="color:#e6db74">&#39;/Users/oa/.local/bin/tailwindcss-macos-arm64-3.4.13&#39;</span>.
+
+Assure that you have added package.json and node_modules to your .gitignore file.
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;devDependencies&#34;</span>: {<span style="color:#f92672">&#34;tailwindcss&#34;</span>: <span style="color:#e6db74">&#34;latest&#34;</span>}, 
+  <span style="color:#f92672">&#34;web-types&#34;</span>: <span style="color:#e6db74">&#34;./htmx.web-types.json&#34;</span>
+}
+</code></pre></div><!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/11/30/the-timeless-power-of-minor.html">The Timeless Power of Minor Threat&#39;s &#39;Salad Days&#39; Cover</a></h1>
+		
+
+		<a href="https://andrich.me/2024/11/30/the-timeless-power-of-minor.html" class="u-url"><time class="dt-published" datetime="2024-11-30 18:27:02 &#43;0100">Nov 30, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/11/27/initial-thoughts-on-pycharm.html">Initial Thoughts on PyCharm</a></h1>
+		
+
+		<a href="https://andrich.me/2024/11/27/initial-thoughts-on-pycharm.html" class="u-url"><time class="dt-published" datetime="2024-11-27 21:59:14 &#43;0100">Nov 27, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/11/24/words-a-new-habit-for.html">100 words, a new habit for me?</a></h1>
+		
+
+		<a href="https://andrich.me/2024/11/24/words-a-new-habit-for.html" class="u-url"><time class="dt-published" datetime="2024-11-24 15:55:44 &#43;0100">Nov 24, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/10/01/two-weeks-with-uv.html">Two weeks with uv</a></h1>
+		
+
+		<a href="https://andrich.me/2024/10/01/two-weeks-with-uv.html" class="u-url"><time class="dt-published" datetime="2024-10-01 20:14:46 &#43;0100">Oct 1, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2024/09/15/uv-i-am-somewhat-sold.html">UV — I am (somewhat) sold</a></h1>
+		
+
+		<a href="https://andrich.me/2024/09/15/uv-i-am-somewhat-sold.html" class="u-url"><time class="dt-published" datetime="2024-09-15 14:28:36 &#43;0100">Sep 15, 2024</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">uv python install 3.8
+uv python install 3.9
+uv python install 3.10
+uv python install 3.11
+uv python install 3.12
+uv python install 3.13
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fish" data-lang="fish">alias python3.<span style="color:#ae81ff">8</span> <span style="color:#e6db74">&#39;uv run --python=3.8 python3&#39;</span>
+alias python3.<span style="color:#ae81ff">9</span> <span style="color:#e6db74">&#39;uv run --python=3.9 python3&#39;</span>
+alias python3.<span style="color:#ae81ff">10</span> <span style="color:#e6db74">&#39;uv run --python=3.10 python3&#39;</span>
+alias python3.<span style="color:#ae81ff">11</span> <span style="color:#e6db74">&#39;uv run --python=3.11 python3&#39;</span>
+alias python3.<span style="color:#ae81ff">12</span> <span style="color:#e6db74">&#39;uv run --python=3.12 python3&#39;</span>
+alias python3.<span style="color:#ae81ff">13</span> <span style="color:#e6db74">&#39;uv run --python=3.13 python3&#39;</span>
+alias python3 python3.<span style="color:#ae81ff">12</span>
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">uv tool install --python<span style="color:#f92672">=</span>3.12 djhtml
+uv tool install --python<span style="color:#f92672">=</span>3.12 poetry
+uv tool install --python<span style="color:#f92672">=</span>3.12 ipython
+uv tool install --python<span style="color:#f92672">=</span>3.12 llm
+uv tool install --python<span style="color:#f92672">=</span>3.12 --with pre-commit-uv pre-commit
+uv tool install --python<span style="color:#f92672">=</span>3.12 --with tox-uv tox
+uv tool install --python<span style="color:#f92672">=</span>3.12 --with mkdocs-material mkdocs
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># run test suite</span>
+@test: create_venv 
+    uvx –with tox-uv tox
+
+<span style="color:#75715e"># serve docs during development</span>
+@serve-docs: 
+    uvx –with mkdocs-material mkdocs serve
+
+<span style="color:#75715e"># build documenation</span>
+@build-docs: 
+    uvx –with mkdocs-material mkdocs build
+
+<span style="color:#75715e"># publish documentation on github</span>
+@publish-docs: 
+    build-docs uvx –with mkdocs-material mkdocs gh-deploy –force
+
+<span style="color:#75715e"># run pre-commit rules on all files</span>
+@lint: create_venv
+    uvx –with pre-commit-uv pre-commit run –all-files
+
+<span style="color:#75715e"># run test suite</span>
+@test: create_venv
+    uvx –with tox-uv tox
+
+<span style="color:#75715e"># serve docs during development</span>
+@serve-docs:
+    uvx –with mkdocs-material mkdocs serve
+
+<span style="color:#75715e"># build documenation</span>
+@build-docs:
+    uvx –with mkdocs-material mkdocs build
+
+<span style="color:#75715e"># publish documentation on github</span>
+@publish-docs: build-docs
+    uvx –with mkdocs-material mkdocs gh-deploy –force
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># Install the current version of uv and uvx to $HOME/.cargo/bin</span>
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+<span style="color:#75715e"># Install Python versions</span>
+uv python install 3.8
+uv python install 3.9
+uv python install 3.10
+uv python install 3.11
+uv python install 3.12
+uv python install 3.13
+
+<span style="color:#75715e"># Define the aliases</span>
+alias python3.8 <span style="color:#e6db74">&#39;uv run --python=3.8 python3&#39;</span>
+alias python3.9 <span style="color:#e6db74">&#39;uv run --python=3.9 python3&#39;</span>
+alias python3.10 <span style="color:#e6db74">&#39;uv run --python=3.10 python3&#39;</span>
+alias python3.11 <span style="color:#e6db74">&#39;uv run --python=3.11 python3&#39;</span>
+alias python3.12 <span style="color:#e6db74">&#39;uv run --python=3.12 python3&#39;</span>
+alias python3.13 <span style="color:#e6db74">&#39;uv run --python=3.13 python3&#39;</span>
+alias python3 python3.12
+
+<span style="color:#75715e"># Install tools to $HOME/.local/bin</span>
+uv tool install --python<span style="color:#f92672">=</span>3.12 djhtml
+uv tool install --python<span style="color:#f92672">=</span>3.12 poetry
+uv tool install --python<span style="color:#f92672">=</span>3.12 ipython
+uv tool install --python<span style="color:#f92672">=</span>3.12 llm
+uv tool install --python<span style="color:#f92672">=</span>3.12 --with pre-commit-uv pre-commit
+uv tool install --python<span style="color:#f92672">=</span>3.12 --with tox-uv tox
+uv tool install --python<span style="color:#f92672">=</span>3.12 --with mkdocs-material mkdocs
+</code></pre></div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># Install the current version of uv and uvx to $HOME/.cargo/bin</span>
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+<span style="color:#75715e"># Install Python versions</span>
+uv python install 3.12
+
+<span style="color:#75715e"># Define the aliases</span>
+alias python3.12 <span style="color:#e6db74">&#39;uv run --python=3.12 python3&#39;</span>
+alias python3 python3.12
+</code></pre></div>
+		</div>
+	  </div>
+	
+
+</div>
+
+
+    
+    
+
+  </body>
+
+</html>
