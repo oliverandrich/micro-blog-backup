@@ -24,13 +24,107 @@
 	
 	  <div class="h-entry">
 		
+			<h1><a href="https://andrich.me/2025/01/20/ideas-how-to-support-tailwind.html">Ideas how to support Tailwind CSS 4.x in django-tailwind-cli</a></h1>
+		
+
+		<a href="https://andrich.me/2025/01/20/ideas-how-to-support-tailwind.html" class="u-url"><time class="dt-published" datetime="2025-01-20 22:50:58 &#43;0100">Jan 20, 2025</time></a>
+
+		<div class="e-content">
+			 <p><a href="https://tailwindcss.com">Tailwind CSS</a> released its <a href="https://tailwindcss.com/docs/v4-beta">first beta</a> version at the end of November of last year. Since then, I have been thinking about how to implement the changes in the Django library <a href="https://pypi.org/project/django-tailwind-cli/">django-tailwind-cli</a>.</p>
+<p>Tailwind CSS 4.0 includes some interesting and substantial changes:</p>
+<ul>
+<li>Instead of a tailwind.config.js file, you can configure all of your customizations directly in the CSS file where you import Tailwind.</li>
+<li>Automatic source detection.</li>
+<li>Simplified theme configuration and CSS-first configuration make a lot of customization steps that I normally add to <code>tailwind.config.js</code> obsolete, as they just work.</li>
+</ul>
+<p>Even though the new version still supports configuring the library using a <code>tailwind.config.js</code>, I think about introducing some backward incompatible changes for changes.</p>
+<ul>
+<li>The versioning follows the Tailwind CSS library, which means the next release will be 4.×.</li>
+<li>The management sub command <code>list_templates</code> is removed.</li>
+<li>The configuration variable <code>TAILWIND_CLI_CONFIG_FILE</code> is removed.</li>
+<li><code>TAILWIND_CLI_SRC_CSS</code> is changed into a required configuration variable with a sane default.</li>
+<li>I am also considering merging the <code>runserver</code> and <code>runserver_plus</code> management commands into a single <code>runserver</code>command, that has the functionality of the <code>runserver_plus</code> command. I am still not sure if I want to turn <code>django-extensions</code> from an optional into a required dependency.</li>
+</ul>
+<p>Furthermore, I am still not sure how to implement the transition. It can be a hard and manual one, or I can try to implement some kind of migration code. The latter is a lot of work and might not work in all situations. The former requires extra work for the users.</p>
+<p>Your feedback is welcome. Leave a comment or write me a message on Mastodon or an email.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+
+		<a href="https://andrich.me/2025/01/19/my-microblog-got-a-now.html" class="u-url"><time class="dt-published" datetime="2025-01-19 18:27:53 &#43;0100">Jan 19, 2025</time></a>
+
+		<div class="e-content">
+			 <p>My micro.blog got a <a href="https://andrich.me/now/">now</a> page. I love the idea created by <a href="https://nownownow.com/about">Derek Sivers</a>. It adds a convenient way to show what you are up to at the moment. Way more personal than social media posts.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+
+		<a href="https://andrich.me/2025/01/18/this-is-a-rather-typical.html" class="u-url"><time class="dt-published" datetime="2025-01-18 22:52:24 &#43;0100">Jan 18, 2025</time></a>
+
+		<div class="e-content">
+			 <!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+
+		<a href="https://andrich.me/2025/01/18/i-took-my-switch-out.html" class="u-url"><time class="dt-published" datetime="2025-01-18 22:27:55 &#43;0100">Jan 18, 2025</time></a>
+
+		<div class="e-content">
+			 <p>I took my Switch out of the cupboard again and decided to play <a href="https://en.wikipedia.org/wiki/The_Legend_of_Zelda:_Breath_of_the_Wild">The Legend of Zelda: Breath of the Wild</a> once more. I really like the style of this game. And I need something less violent and less bloody than the stuff on my Xbox.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://andrich.me/2025/01/18/week-notes-back-to-work.html">Week Notes 2025-01-18 — Back to work</a></h1>
+		
+
+		<a href="https://andrich.me/2025/01/18/week-notes-back-to-work.html" class="u-url"><time class="dt-published" datetime="2025-01-18 18:14:26 &#43;0100">Jan 18, 2025</time></a>
+
+		<div class="e-content">
+			 <p>This was the first workweek of 2025. A packed week that felt like I was on a high-speed circuit. Jumping back and forth between five active projects, where I have different roles. Hacked a lot of Python and Django for one project. Did a lot of consulting on another project. Long days, but somehow this all felt excellent and I felt alive. It kicked me out of my winter vacation lethargy.</p>
+<h3 id="articles">Articles</h3>
+<p><a href="https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=OJ:L_202401689">AI Regulations by the European Parliament</a> — I spent most of my non-fictional reading time with this document to prepare for the upcoming launch and check if we still have things to tackle.</p>
+<h3 id="links">Links</h3>
+<p><a href="https://github.com/danihodovic/django-allauth-ui">django-allauth-ui</a> — I enjoy <a href="https://allauth.org/">django-allauth</a>, but its templates drive me crazy. Then I discovered django-allauth-ui in <a href="https://indieweb.social/@adamghill/113816443823746016">a Mastodon post </a>by Adam. A good library that provides good-looking dialogs for authentication out of the box.</p>
+<h3 id="current-reading">Current Reading</h3>
+<p>I finished the <a href="https://www.cross-cult.de/produkte/details/star-trek-zeit-des-wandels-1-geburt/">first book of the Star Trek - Zeit des Wandels</a> series and started to read <a href="https://www.cross-cult.de/produkte/details/ebook-star-trek-zeit-des-wandels-2-tod/">the second book</a>. It is a wonderful series. Totally in tone with the Star Trek universe. It contains many references to The Next Generation and connects to some unfinished stories and plots.</p>
+<p>The artificial intelligence book by Inga Strümke was a great read too. Now I started to re-read <a href="https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/">Fluent Python</a>. This is the one Python book that I re-read over and over again. I always learn something new or refresh my knowledge.</p>
+<p>Next I plan to read the <a href="https://en.wikipedia.org/wiki/Rivers_of_London_(book_series)">Rivers of London</a> series. I only read one book some years ago, and really liked it. Sadly, I didn’t continue with it. This time I will read them in English.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+
+		<a href="https://andrich.me/2025/01/17/i-joined-pixelfed-not-sure.html" class="u-url"><time class="dt-published" datetime="2025-01-17 22:44:09 &#43;0100">Jan 17, 2025</time></a>
+
+		<div class="e-content">
+			 <p><a href="https://pixel.tchncs.de/i/web/profile/785192162659300477">I joined pixelfed</a>. Not sure, what to do with it yet. I am by no means a great photographer. More like a motivated dilettante. But it is cool to try a new service. And it seems as the feed can be consumed, and <a href="https://news.micro.blog/2025/01/17/fixed-setting-up-pixelfed-crossposting.html">the pictures can be posted here</a> too.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
 			<h1><a href="https://andrich.me/2025/01/11/backup-for-my-home-server.html">Backup for my home server with restic and resticprofile</a></h1>
 		
 
 		<a href="https://andrich.me/2025/01/11/backup-for-my-home-server.html" class="u-url"><time class="dt-published" datetime="2025-01-11 17:42:05 &#43;0100">Jan 11, 2025</time></a>
 
 		<div class="e-content">
-			 <p><img src="https://andrich.me/uploads/2025/cleanshot-2025-01-11-at-16.43.452x.png" alt=""></p>
+			 <p><img src="https://cdn.uploads.micro.blog/196790/2025/cleanshot-2025-01-11-at-16.43.452x.png" alt=""></p>
 <p>Recently, I did myself a favor and bought a little <a href="https://www.amazon.com/-/de/dp/B0D6G36LVK/?th=1">Beelink SER5 Pro Mini PC</a> a home server to run some services I use on my home network and also to run some development containers.</p>
 <p>With this shiny new home server, I also wanted to set up some offsite backups for it. I <a href="https://social.tchncs.de/@oliverandrich/113809850827095296">asked</a> on Mastodon for suggestions and got tips to use <a href="https://www.borgbackup.org/">borgbackup</a> and <a href="https://restic.net/">restic</a>. Both are reasonable suggestions with great documentation.</p>
 <p>After some research, I decided to go with restic and <a href="https://creativeprojects.github.io/resticprofile/">resticprofile</a>. The deciding factor was that Hetzner, whose new <a href="https://www.hetzner.com/storage/object-storage/">S3-compatible object storage</a> I wanted to use, had a <a href="https://docs.hetzner.com/storage/object-storage/howto-backups/restic">documentation for using restic</a>.</p>
@@ -140,7 +234,7 @@ resticprofile backup
 <li><a href="https://www.rheinwerk-verlag.de/kuenstliche-intelligenz-wie-sie-funktioniert-und-was-sie-fuer-uns-bedeutet/">Künstliche Intelligenz</a> by <a href="https://strumke.github.io/">Inga Strümke</a> 🇩🇪 — A wonderful introduction to the field of artificial intelligence. A well-deserved bestseller. I am not necessarily the audience for this book with my background in computer science and artificial intelligence studies, but I am learning from this book how to explain modern and partially complex concepts to normal people. In case you need a present for someone who is interested, take this book. I also tried the Norwegian <a href="https://www.norli.no/9788248935728">original book</a>, but my understanding of Norwegian has eroded since the early 2000s. ¯\_(ツ)_/¯</li>
 </ul>
 <h3 id="on-social-media">On social media</h3>
-<p><img src="https://andrich.me/uploads/2025/mastopoet-oliverandrich-09012025.jpg" alt=""></p>
+<p><img src="https://cdn.uploads.micro.blog/196790/2025/mastopoet-oliverandrich-09012025.jpg" alt=""></p>
 <p><a href="https://social.tchncs.de/@oliverandrich/113797928988507791">https://social.tchncs.de/@oliverandrich/113797928988507791</a></p>
 <p>Yesterday I announced that I signed up to <a href="https://codeberg.org/">Codeberg e.V.</a> as a supporting member in favor of my GitHub Pro subscription. I can’t remember that any of my posts received so many boosts and favs. I am a bit surprised by the interaction rate with this Mastodon post. Normally, I see only a few boosts or favs, if any.</p>
 
@@ -155,7 +249,7 @@ resticprofile backup
 		<a href="https://andrich.me/2025/01/09/my-alfred-workflow-for-todoist.html" class="u-url"><time class="dt-published" datetime="2025-01-09 10:51:28 &#43;0100">Jan 9, 2025</time></a>
 
 		<div class="e-content">
-			 <p><img src="https://andrich.me/uploads/2025/cleanshot-2025-01-09-at-09.42.032x.png" alt=""></p>
+			 <p><img src="https://cdn.uploads.micro.blog/196790/2025/cleanshot-2025-01-09-at-09.42.032x.png" alt=""></p>
 <p>I use <a href="https://todoist.com/">Todoist</a> as my task list application for a while now. Before that, I have used <a href="https://culturedcode.com/things/">Things</a> by Cultured Code. I had to leave Things behind because it is still lacking the ability to share to-do list with other users. But one feature I have missed from Things all the time — the Things helper. This is a small add-on that registers a global shortcut, that creates tasks for E-Mails or links in Safari or Chrome.</p>
 <p>I got the inspiration from a friend to reimplement it using <a href="https://www.alfredapp.com">Alfred</a>, my primary shortcut and productivity driver on my Mac. And it was way easier than I thought.</p>
 <h3 id="features">Features</h3>
@@ -528,7 +622,15 @@ alias python3 python3.12
 
 
     
-    
+    <p class="social">
+	<a href="https://social.tchncs.de/@oliverandrich" rel="me" aria-label="Mastodon" target="_blank"><svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg></a>
+	<a href="https://bsky.app/profile/andrich.me" rel="me" aria-label="BlueSky" target="_blank"><svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 17.5 129.1 75.5 72.5 133.5c-107.4 110.2-154.3-27.6-166.3-62.9l0 0c-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8l0 0c-12 35.3-59 173.1-166.3 62.9c-56.5-58-30.4-116 72.5-133.5C100 314.6 33.8 298 15.7 233.1C10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z"/></svg></a>
+	<a href="https://micro.blog/oliverandrich" target="_blank" rel="me" aria-label="Micro.blog"><svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M399.4 362.2c29.5-34.7 47.1-78.3 47.1-125.8C446.5 123.5 346.9 32 224 32S1.5 123.5 1.5 236.4 101.1 440.9 224 440.9a239.3 239.3 0 0 0 79.4-13.4 7.2 7.2 0 0 1 8.1 2.6c18.6 25.1 47.6 42.7 79.9 49.9a4.4 4.4 0 0 0 5.2-3.4 4.4 4.4 0 0 0 -.9-3.6 87 87 0 0 1 3.7-110.7zM329.5 212.4l-57.3 43.5L293 324.8a6.5 6.5 0 0 1 -9.9 7.2L224 290.9 164.9 332a6.5 6.5 0 0 1 -10-7.2l20.8-68.9-57.3-43.5a6.5 6.5 0 0 1 3.8-11.7l71.9-1.5 23.7-67.9a6.5 6.5 0 0 1 12.3 0l23.7 67.9 71.9 1.5a6.5 6.5 0 0 1 3.9 11.7z"/></svg></a>
+	<a href="https://pixel.tchncs.de/i/web/profile/785192162659300477" target="_blank" rel="me" aria-label="Pixelfed"><svg width="28px" height="28px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm1.031 6.099h-2.624c-.988 0-1.789.776-1.789 1.733v6.748l2.595-2.471h1.818c1.713 0 3.101-1.345 3.101-3.005s-1.388-3.005-3.1-3.005z"/></svg></a>
+	<a href="https://codeberg.org/oliverandrich" target="_blank" rel="me" aria-label="Codeberg"><svg width="24px" height="24px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><path d="M11.955.49A12 12 0 0 0 0 12.49a12 12 0 0 0 1.832 6.373L11.838 5.928a.187.14 0 0 1 .324 0l10.006 12.935A12 12 0 0 0 24 12.49a12 12 0 0 0-12-12 12 12 0 0 0-.045 0zm.375 6.467 4.416 16.553a12 12 0 0 0 5.137-4.213z"/></svg></a>
+	<a href="https://github.com/oliverandrich" target="_blank" rel="me" aria-label="Github"><svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></a>
+	<a href="mailto:contact@andrich.me" aria-label="Email"><svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg></a>
+</p>
 
   </body>
 
